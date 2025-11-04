@@ -1,0 +1,20 @@
+{
+  "cli": {
+    "version": ">= 13.0.0"
+  },
+  "build": {
+    "apk": {
+      "android": {
+        "buildType": "apk",
+        "autoIncrement": "versionCode"
+      },
+      "distribution": "internal"
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle",
+        "autoIncrement": "versionCode"
+      }
+    }
+  }
+}

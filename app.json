@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Agrosync campo",
+    "slug": "agrosynccampo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.brasilsync.agrosynccampo",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.brasilsync.agrosynccampo",
+      "edgeToEdgeEnabled": true,
+      "versionCode": 22,
+      "usesCleartextTraffic": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dc9902df-cb2a-4cff-a935-10979d98ae1a"
+      }
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "manifestApplicationAttributes": {
+              "android:networkSecurityConfig": "@xml/network_security_config"
+            }
+          }
+        }
+      ]
+    ],
+    "owner": "brasilsync"
+  }
+}
