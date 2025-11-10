@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -28,39 +28,10 @@ export default function ProfileScreen() {
   // =========================
   // ?? Tema dinamico
   // =========================
-  const { themeMode, toggleTheme } = useContext(ThemeContext);
+  const { themeMode, toggleTheme, colors } = useContext(ThemeContext);
   const { sync, syncing, status: syncStatus, lastSyncAt, error: syncError } = useContext(SyncContext);
 
-  const isDark = themeMode === "dark";
-
-  const THEME = useMemo(
-    () =>
-      isDark
-        ? {
-          primary: "#c3a382",
-          primaryDark: "#a37f5e",
-          bg: "#111827",
-          card: "#1f2937",
-          border: "#374151",
-          text: "#f3f4f6",
-          muted: "#d6c0a6",
-          danger: "#F87171",
-          success: "#10B981",
-        }
-        : {
-          primary: "#a37f5e",
-          primaryDark: "#8b684d",
-          bg: "#fbfaf8",
-          card: "#ffffff",
-          border: "#efe6dc",
-          text: "#533b29",
-          muted: "#8b684d",
-          danger: "#EF4444",
-          success: "#15803D",
-        },
-    [isDark]
-  );
-
+  const THEME = colors;
   const s = styles(THEME);
   const lastSyncFormatted = useMemo(() => {
     if (!lastSyncAt) return "Nunca sincronizado";

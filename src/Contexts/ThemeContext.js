@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
+import { getPalette } from "../theme/palettes";
 
 export const ThemeContext = createContext();
 
@@ -19,8 +20,10 @@ export const ThemeProvider = ({ children }) => {
     await AsyncStorage.setItem("@themePreference", next);
   };
 
+  const colors = useMemo(() => getPalette(themeMode), [themeMode]);
+
   return (
-    <ThemeContext.Provider value={{ themeMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ themeMode, toggleTheme, colors }}>
       {children}
     </ThemeContext.Provider>
   );

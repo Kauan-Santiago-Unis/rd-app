@@ -19,7 +19,8 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  Image,
+  View,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { SyncContext } from "../../Contexts/SyncContext";
@@ -27,45 +28,30 @@ import { ThemeContext } from "../../Contexts/ThemeContext";
 import { ApiError, api } from "../../services/api";
 
 export default function SignIn() {
-  const { themeMode } = useContext(ThemeContext);
+  const { themeMode, colors } = useContext(ThemeContext);
   const { sync } = useContext(SyncContext);
   const isDark = themeMode === "dark";
   const navigation = useNavigation();
 
-  const THEME = useMemo(
-    () =>
-      isDark
-        ? {
-          // modo escuro
-          primary: "#c3a382", // areia médio (#c3a382)
-          bg: "#111827", // fundo escuro
-          card: "#1f2937", // container cinza intermediário
-          border: "#374151", // borda cinza
-          text: "#f3f4f6", // texto claro
-          muted: "#d6c0a6", // texto secundário
-          danger: "#F87171",
-          icon: "#f3f4f6",
-          chipBg: "rgba(195,163,130,0.18)",
-          chipBorder: "rgba(195,163,130,0.35)",
-        }
-        : {
-          // modo claro
-          primary: "#a37f5e", // tom areia mais escuro (#a37f5e)
-          bg: "#fbfaf8", // fundo claro
-          card: "#ffffff", // cartão branco
-          border: "#efe6dc", // borda clara
-          text: "#533b29", // texto principal
-          muted: "#8b684d", // texto secundário
-          danger: "#EF4444",
-          icon: "#533b29",
-          chipBg: "rgba(163,127,94,0.10)",
-          chipBorder: "rgba(163,127,94,0.25)",
-        },
-    [isDark]
-  );
-
+  const THEME = {
+    ...colors,
+    icon: colors.text,
+    chipBg: isDark ? "rgba(195,163,130,0.18)" : "rgba(163,127,94,0.10)",
+    chipBorder: isDark ? "rgba(195,163,130,0.35)" : "rgba(163,127,94,0.25)",
+  };
 
   const s = styles(THEME);
+
+  // Resolve o tamanho real do logo local para usar a proporção correta
+  const logoSource = useMemo(
+    () => require("../../../assets/logo_sem_fundo.png"),
+    [],
+  );
+  const logoMeta = Image.resolveAssetSource(logoSource);
+  const logoAspectRatio =
+    logoMeta && logoMeta.width && logoMeta.height
+      ? logoMeta.width / logoMeta.height
+      : 1;
 
   const [debugModalVisible, setDebugModalVisible] = useState(false);
   const [debugPayloadText, setDebugPayloadText] = useState("");
@@ -104,8 +90,8 @@ export default function SignIn() {
   };
 
   const handleForgot = () => {
-    // troque por navegação para "ForgotPassword" se houver
-    alert("Vamos te ajudar a recuperar sua senha 😉");
+    // troque por navegacao para "ForgotPassword" se houver
+    alert("Vamos te ajudar a recuperar sua senha");
   };
 
   const handleLogin = async () => {
@@ -119,12 +105,15 @@ export default function SignIn() {
           username: email.trim(),
           password: senha,
         },
-        { auth: false }
+        { auth: false },
       );
 
-      // salva token e dados do usuário
+      // salva token e dados do usuario
       await AsyncStorage.setItem("@accessToken", data.accessToken);
-      await AsyncStorage.setItem("@userDetails", JSON.stringify(data.userDetails));
+      await AsyncStorage.setItem(
+        "@userDetails",
+        JSON.stringify(data.userDetails),
+      );
 
       const syncResult = await sync({ silent: true });
       const safraPayloads = syncResult?.safraDebugPayloads;
@@ -159,7 +148,11 @@ export default function SignIn() {
 
       const details = new Set();
       if (error instanceof ApiError) {
-        console.log("Erro de login:", error.details || error.message, error.cause);
+        console.log(
+          "Erro de login:",
+          error.details || error.message,
+          error.cause,
+        );
         details.add(stringifyDetail(error.details));
         details.add(stringifyDetail(error.cause));
         details.add(stringifyDetail(error.message));
@@ -176,17 +169,20 @@ export default function SignIn() {
       alert(
         detailMessage
           ? `Falha no login.\nDetalhes: ${detailMessage}`
-          : "Falha no login. Verifique seus dados e tente novamente."
+          : "Falha no login. Verifique seus dados e tente novamente.",
       );
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
     <View style={[s.container, { backgroundColor: THEME.bg }]}>
-      <StatusBar style={isDark ? "light" : "dark"} backgroundColor={THEME.bg} animated />
+      <StatusBar
+        style={isDark ? "light" : "dark"}
+        backgroundColor={THEME.bg}
+        animated
+      />
       <Modal
         visible={debugModalVisible}
         animationType="slide"
@@ -225,15 +221,22 @@ export default function SignIn() {
         </View>
       </Modal>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={s.content}>
             {/* Brand / Header */}
             <View style={s.brand}>
               <View style={s.logoCircle}>
-                <Ionicons name="cafe" size={26} color="#fff" />
+                <Image
+                  source={logoSource}
+                  style={[s.logoImage, { aspectRatio: logoAspectRatio }]}
+                  resizeMode="contain"
+                />
               </View>
-              <Text style={s.appTitle}>Agrosync Campo</Text>
+              <Text style={s.appTitle}>Rd App</Text>
               <Text style={s.appSubtitle}>Faça login para continuar</Text>
             </View>
 
@@ -242,7 +245,12 @@ export default function SignIn() {
               {/* Email */}
               <Text style={s.inputLabel}>Email</Text>
               <View style={s.inputRow}>
-                <Ionicons name="mail-outline" size={18} color={THEME.muted} style={s.inputIcon} />
+                <Ionicons
+                  name="mail-outline"
+                  size={18}
+                  color={THEME.muted}
+                  style={s.inputIcon}
+                />
                 <TextInput
                   value={email}
                   onChangeText={setEmail}
@@ -261,7 +269,12 @@ export default function SignIn() {
               {/* Senha */}
               <Text style={[s.inputLabel, { marginTop: 12 }]}>Senha</Text>
               <View style={s.inputRow}>
-                <Ionicons name="lock-closed-outline" size={18} color={THEME.muted} style={s.inputIcon} />
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={18}
+                  color={THEME.muted}
+                  style={s.inputIcon}
+                />
                 <TextInput
                   style={s.input}
                   placeholder="Digite sua senha"
@@ -282,7 +295,10 @@ export default function SignIn() {
 
               {/* Lembrar de mim + Esqueci senha */}
               <View style={s.rowBetween}>
-                <Pressable style={s.rememberRow} onPress={() => setRemember((r) => !r)}>
+                <Pressable
+                  style={s.rememberRow}
+                  onPress={() => setRemember((r) => !r)}
+                >
                   <Ionicons
                     name={remember ? "checkbox" : "square-outline"}
                     size={18}
@@ -295,7 +311,7 @@ export default function SignIn() {
                 </TouchableOpacity>
               </View>
 
-              {/* Botão Entrar com gradiente */}
+              {/* BotÃ£o Entrar com gradiente */}
               <TouchableOpacity
                 disabled={!canSubmit}
                 style={[s.primaryBtn, !canSubmit && s.primaryBtnDisabled]}
@@ -304,9 +320,7 @@ export default function SignIn() {
               >
                 <LinearGradient
                   colors={
-                    canSubmit
-                      ? ["#c3a382", "#a37f5e"]
-                      : ["#d6c0a6", "#d6c0a6"]
+                    canSubmit ? ["#c3a382", "#a37f5e"] : ["#d6c0a6", "#d6c0a6"]
                   }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -324,11 +338,9 @@ export default function SignIn() {
               </TouchableOpacity>
             </View>
 
-            {/* Rodapé / Suporte */}
+            {/* RodapÃ© / Suporte */}
             <View style={s.footer}>
-              <Text style={s.footerText}>
-                Precisa de ajuda? <Text style={[s.link, { fontWeight: "700" }]}>Fale com o suporte</Text>
-              </Text>
+              <Text style={s.footerText}>Precisa de ajuda? </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -352,17 +364,16 @@ function styles(THEME) {
       marginBottom: 18,
     },
     logoCircle: {
-      width: 64,
-      height: 64,
-      borderRadius: 18,
+      width: "100%",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: THEME.primary,
-      shadowColor: "#000",
-      shadowOpacity: 0.12,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 4 },
       marginBottom: 10,
+    },
+    logoImage: {
+      width: "45%",
+      height: undefined,
+      aspectRatio: 1,
+      alignSelf: "center",
     },
     appTitle: {
       fontSize: 20,
@@ -436,7 +447,7 @@ function styles(THEME) {
       fontWeight: "700",
     },
 
-    // Botão principal
+    // BotÃ£o principal
     primaryBtn: {
       marginTop: 16,
       borderRadius: 12,

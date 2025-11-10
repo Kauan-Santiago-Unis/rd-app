@@ -8,6 +8,7 @@ import SafraDetalhe from '../Screens/SafraDetalhe';
 import SignIn from '../Screens/SignIn';
 // import SignUp from '../Screens/SignUp';
 import MainTab from './MainTab.android';
+import Produto from '../Screens/Produto';
 
 const Stack = createStackNavigator();
 
@@ -26,5 +27,6 @@ export default () => (
     <Stack.Screen name="CadastroSafra" component={SafraCadastro} />
     <Stack.Screen name="SafraHome" component={SafraHome} />
     <Stack.Screen name="DetalheSafra" component={SafraDetalhe} />
+    <Stack.Screen name="Produto" component={Produto} />
   </Stack.Navigator>
 );

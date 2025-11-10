@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+﻿import AsyncStorage from "@react-native-async-storage/async-storage";
 import env from "../config/environment";
 
 const { API_URL } = env ?? {};
@@ -125,3 +125,6 @@ export const api = {
   delete: (endpoint, options = {}) =>
     request(endpoint, { ...options, method: "DELETE" }),
 };
+
+
+

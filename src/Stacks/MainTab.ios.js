@@ -1,8 +1,10 @@
-// src/Stacks/MainTab.ios.js
+﻿// src/Stacks/MainTab.ios.js
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GlassView } from 'expo-glass-effect';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useContext, useMemo } from 'react';
+import { ThemeContext } from '../Contexts/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Home from '../Screens/Home';
@@ -10,15 +12,26 @@ import ProfileScreen from '../Screens/Perfil';
 
 const Tab = createBottomTabNavigator();
 
-const COLORS = {
-  active: '#0A84FF',
-  muted: '#3C3C43', // system gray iOS
-  segmentActiveBg: 'rgba(10,132,255,0.14)',
-  segmentActiveBorder: 'rgba(10,132,255,0.35)',
-};
+function withAlpha(hex, a) {
+  if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) return `rgba(0,0,0,${a})`;
+  const clean = hex.replace('#','');
+  const bigint = parseInt(clean.length === 3 ? clean.split('').map(c=>c+c).join('') : clean, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r},${g},${b},${a})`;
+}
 
 function PillTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
+  const { colors } = useContext(ThemeContext);
+  const THEME = colors;
+  const COLORS = useMemo(() => ({
+    active: THEME.active || THEME.primary,
+    muted: THEME.inactive,
+    segmentActiveBg: withAlpha(THEME.active || THEME.primary, 0.14),
+    segmentActiveBorder: withAlpha(THEME.active || THEME.primary, 0.35),
+  }), [THEME]);
 
   return (
     <View
@@ -26,7 +39,7 @@ function PillTabBar({ state, descriptors, navigation }) {
       style={[
         styles.wrap,
         {
-          // pílula “flutuando” um pouco acima do fundo
+          // pílula flutuando um pouco acima do fundo
           paddingBottom: Math.max(insets.bottom, 10) + 8,
         },
       ]}
@@ -139,7 +152,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignSelf: 'center',
     borderRadius: 22,
-    overflow: 'hidden',                    // evita “bordas brancas”
+    overflow: 'hidden',                    // evita â€œbordas brancasâ€
     padding: 3,                            // moldura sutil
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.35)',
@@ -171,3 +184,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+
+
+

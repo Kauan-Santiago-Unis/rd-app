@@ -1,34 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { ActivityIndicator, Animated, StyleSheet, Text, View } from "react-native";
 import { ThemeContext } from "../../Contexts/ThemeContext";
 
 export default function Preload() {
   const navigation = useNavigation();
-  const { themeMode } = useContext(ThemeContext);
+  const { themeMode, colors } = useContext(ThemeContext);
+  const isDark = themeMode === "dark";
   const fadeAnim = new Animated.Value(0);
 
-  const isDark = themeMode === "dark";
-
-  const THEME = useMemo(
-    () =>
-      isDark
-        ? {
-          bg: "#111827",
-          text: "#f3f4f6",
-          muted: "#d6c0a6",
-          primary: "#c3a382",
-        }
-        : {
-          bg: "#fbfaf8",
-          text: "#533b29",
-          muted: "#8b684d",
-          primary: "#a37f5e",
-        },
-    [isDark]
-  );
+  const THEME = colors;
 
   // ✨ Fade-in animado
   useEffect(() => {

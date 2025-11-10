@@ -9,26 +9,8 @@ import ProfileScreen from "../Screens/Perfil";
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
-  const { themeMode } = useContext(ThemeContext);
-  const isDark = themeMode === "dark";
-
-  const THEME = isDark
-    ? {
-      active: "#c3a382",
-      inactive: "#9CA3AF",
-      bg: "#0B1220",
-      card: "#111827",
-      border: "rgba(255,255,255,0.08)",
-      text: "#F8FAFC",
-    }
-    : {
-      active: "#a37f5e",
-      inactive: "#9CA3AF",
-      bg: "#FFFFFF",
-      card: "#FFFFFF",
-      border: "rgba(15,23,42,0.08)",
-      text: "#0F172A",
-    };
+  const { colors } = useContext(ThemeContext);
+  const THEME = colors;
 
   return (
     <Tab.Navigator

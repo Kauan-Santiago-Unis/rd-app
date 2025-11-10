@@ -1,4 +1,3 @@
-
 const ENV = {
   dev: {
     API_URL: "https://dev.api.brasilsync.com.br",
@@ -17,3 +16,4 @@ const getEnvVars = () => {
 };
 
 export default getEnvVars();
+

@@ -1,7 +1,7 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+﻿import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useRef } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -15,51 +15,21 @@ import { SyncContext } from "../../Contexts/SyncContext";
 import { ThemeContext } from "../../Contexts/ThemeContext";
 
 export default function Home({ navigation }) {
-  const { themeMode } = useContext(ThemeContext);
+  const { themeMode, colors } = useContext(ThemeContext);
+  const isDark = themeMode === "dark";
   const { syncing, status: syncStatusText, error: syncError } = useContext(SyncContext);
 
-  const isDark = themeMode === "dark";
-
-  const THEME = useMemo(
-    () =>
-      isDark
-        ? {
-          primary: "#c3a382",
-          primaryDark: "#a37f5e",
-          bg: "#111827",
-          card: "#1f2937",
-          border: "#374151",
-          text: "#f3f4f6",
-          muted: "#d6c0a6",
-          danger: "#F87171",
-          success: "#10B981",
-          warning: "#FBBF24",
-        }
-        : {
-          primary: "#a37f5e",
-          primaryDark: "#8b684d",
-          bg: "#fbfaf8",
-          card: "#ffffff",
-          border: "#efe6dc",
-          text: "#533b29",
-          muted: "#8b684d",
-          danger: "#EF4444",
-          success: "#15803D",
-          warning: "#CA8A04",
-        },
-    [isDark]
-  );
-
+  const THEME = colors;
   const s = styles(THEME);
 
   const isSynced = syncStatusText === "Tudo sincronizado";
   const statusColor = isSynced ? THEME.success : syncError ? THEME.danger : THEME.warning;
   const statusIcon = isSynced ? "checkmark-circle-outline" : "alert-circle-outline";
 
-  // ⚙️ Sincronização inicial
+  // âš™ï¸ SincronizaÃ§Ã£o inicial
   ;
 
-  // 💫 Animação nos botões
+  // ðŸ’« AnimaÃ§Ã£o nos botÃµes
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -82,7 +52,7 @@ export default function Home({ navigation }) {
     <SafeAreaView style={[s.container, { backgroundColor: THEME.bg }]}>
       <StatusBar style={isDark ? "light" : "dark"} backgroundColor={THEME.bg} />
 
-      {/* 🔄 Status de sincronização */}
+      {/* ðŸ”„ Status de sincronizaÃ§Ã£o */}
       <View style={s.syncStatus}>
         {syncing ? (
           <ActivityIndicator size="small" color={THEME.warning} style={{ marginRight: 6 }} />
@@ -106,7 +76,7 @@ export default function Home({ navigation }) {
         </Text>
       </View>
 
-      {/* Cabeçalho */}
+      {/* CabeÃ§alho */}
       <View style={s.header}>
         <Text style={s.title}>AgroSync Coffee Campo</Text>
         <Text style={s.subtitle}>Bem-vindo de volta</Text>
@@ -132,6 +102,27 @@ export default function Home({ navigation }) {
                 <Ionicons name="leaf-outline" size={30} color="#fff" />
               </View>
               <Text style={s.cardLabel}>Previsão de Safra</Text>
+            </LinearGradient>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={() => navigation.navigate("Produto")}
+        >
+          <Animated.View
+            style={[s.card, { transform: [{ scale: scaleAnim }] }]}
+          >
+            <LinearGradient
+              colors={[THEME.primary, THEME.primaryDark]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={s.cardGrad}
+            >
+              <View style={s.iconCircle}>
+                <Ionicons name="pricetags-outline" size={30} color="#fff" />
+              </View>
+              <Text style={s.cardLabel}>Produtos</Text>
             </LinearGradient>
           </Animated.View>
         </TouchableWithoutFeedback>
@@ -223,3 +214,5 @@ function styles(THEME) {
     },
   });
 }
+
+
