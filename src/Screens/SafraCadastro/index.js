@@ -342,20 +342,26 @@ export default function SafraCadastro() {
     () =>
       isDark
         ? {
-          primary: "#c3a382",
-          bg: "#111827",
-          card: "#1f2937",
-          border: "#374151",
-          text: "#f3f4f6",
-          muted: "#d6c0a6",
+          primary: "#EF4444",
+                primaryDark: "#DC2626",
+                bg: "#111111",
+                card: "#18181B",
+                border: "#374151",
+                text: "#F9FAFB",
+                muted: "#9CA3AF",
+                active: "#EF4444",
+                inactive: "#4B5563",
         }
         : {
-          primary: "#a37f5e",
-          bg: "#fbfaf8",
-          card: "#ffffff",
-          border: "#efe6dc",
-          text: "#533b29",
-          muted: "#8b684d",
+          primary: "#D92626",
+                primaryDark: "#B91C1C",
+                bg: "#F3F4F6",
+                card: "#FFFFFF",
+                border: "#E5E7EB",
+                text: "#111827",
+                muted: "#6B7280",
+                active: "#D92626",
+                inactive: "#9CA3AF",
         },
     [isDark]
   );

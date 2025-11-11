@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo} from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -33,6 +33,7 @@ export default function ProfileScreen() {
 
   const THEME = colors;
   const s = styles(THEME);
+  const isDark = themeMode === "dark";
   const lastSyncFormatted = useMemo(() => {
     if (!lastSyncAt) return "Nunca sincronizado";
     try {
